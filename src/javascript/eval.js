@@ -1,6 +1,6 @@
 var util = require("util");
 var copy = require("dj-utils").copy;
-// var Promise = require("bluebird");
+var Promise = require("bluebird");
 var vm = require("vm");
 var dt = require("date-and-time");
 var q = require('dj-utils').query.criteria;

@@ -1,5 +1,5 @@
 var jp = require("jsonpath");
-// var Promise = require("bluebird");
+var Promise = require("bluebird");
 var Script = require("dj-dps-interpreter");
 var copy = require("dj-utils").copy;
 var http = require('request-promise');

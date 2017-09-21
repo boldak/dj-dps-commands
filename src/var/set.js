@@ -2,7 +2,7 @@ var copy = require("dj-utils").copy;
 var apply = require("dj-utils").apply;
 var util = require("util");
 var jp = require("jsonpath");
-// var Promise =require('bluebird');
+var Promise =require('bluebird');
 
 
 var SetImplError = function(message) {

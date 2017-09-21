@@ -1,4 +1,4 @@
-// var Promise = require("bluebird");
+var Promise = require("bluebird");
 var http = require('request-promise');
 // var set = require("../var/set").implementation;
 var jp = require("jsonpath");

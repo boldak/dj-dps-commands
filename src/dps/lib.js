@@ -1,4 +1,4 @@
-// var Promise = require("bluebird");
+var Promise = require("bluebird");
 var http = require('request-promise');
 var jp = require("jsonpath");
 var _ = require("lodash-node")

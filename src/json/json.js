@@ -3,7 +3,7 @@ var iconv = require('iconv-lite');
 var csvjson = require("csvjson");
 var xmljson = require("xml2js");
 var htmljson = require('html2json').html2json;
-// var Promise = require('bluebird');
+var Promise = require('bluebird');
 
 var JsonImplError = function(message) {
     this.message = message;
