@@ -21,7 +21,7 @@
     "copy-object": "^1.0.0",
     "csvjson": "^4.0.0",
     "date-and-time": "^0.3.0",
-    "dj-dps-interpreter": "boldak/dj-dps-interpreter",
+    "dj-dps-interpreter": "boldak/dj-dps-interpreter#dev",
     "dj-geodata": "boldak/dj-geodata",
     "dj-utils": "boldak/dj-utils",
     "html2json": "^1.0.2",
