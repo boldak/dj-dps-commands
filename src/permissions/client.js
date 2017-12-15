@@ -1,5 +1,4 @@
 var Promise = require("bluebird");
-var Cache = require("../Cache");
 
 
 var ClientError = function(message) {
