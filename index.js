@@ -19,5 +19,6 @@ module.exports =
         .concat(require("./src/csv"))
         .concat(require("./src/text"))
 	.concat(require("./src/permissions"))
+	.concat(require("./src/storage"))
     
   
