@@ -67,7 +67,7 @@ module.exports = {
                        schema: command.settings.schema.identity,
                        model: model,
                        owner: state.client,
-                       permissions: command.settings.schema.permissions || model.permissions 
+                       permissions: storageUtils.normalizePermissions(command.settings.schema.permissions || model.permissions)
                     })
                 }
             }else if (command.settings.model){
@@ -78,7 +78,7 @@ module.exports = {
                         identity: item.identity,
                         model: {attributes: item.attributes},
                         owner: state.client,
-                        permissions: item.permissions 
+                        permissions: storageUtils.normalizePermissions(item.permissions)
                     }
                 })
             }

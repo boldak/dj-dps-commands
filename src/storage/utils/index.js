@@ -14,6 +14,18 @@ class PermissionException extends Error {
   }
 }
 
+let defaultPermissions = {
+  create:   {role:["owner", "administrator"]},
+  alter:    {role:["owner", "administrator"]},
+  drop:     {role:["owner", "administrator"]},
+  desc:     {role:["owner", "administrator"]},
+  select:   {role:["owner", "administrator"]},
+  insert:   {role:["owner", "administrator"]},
+  update:   {role:["owner", "administrator"]},
+  delete:   {role:["owner", "administrator"]}
+};
+
+
 module.exports = {
 	reloadORM: (sails) => new Promise(( resolve, reject ) => {
 		try {
@@ -51,7 +63,7 @@ module.exports = {
           let roles = [];
           if(client.user.isAdmin) roles.push('administarator')
           if(client.user.isCollaborator) roles.push('collaborator')
-          if(client.user.isAuthor) roles.push('author')
+          if(client.user.isOwner) roles.push('author')
           if(client.user.id == owner.user.id) roles.push('owner')
           let app = client.app;
           if(!permissions || (!permissions.role && !permissions.app) ){
@@ -86,5 +98,47 @@ module.exports = {
 (client: ${JSON.stringify(client)})`))             
         })
         .catch((e) => { reject(new PermissionException(e.toString()))})
-  })
+  }),
+
+accessIsAvailable: (client, identity, operation) => new Promise((resolve, reject) => {
+      Entities
+        .findOne({identity:identity})
+        .then( (res) => {
+          if(!res) {
+            reject(new PermissionException(`Entity '${identity}' is undefined`))
+            return
+          }
+
+          console.log(res)
+          let owner = res.owner;
+          let permissions = (res.permissions) ? res.permissions[operation] : defaultPermissions
+          let roles = [];
+          if(client.user.isAdmin) roles.push('administarator')
+          if(client.user.isCollaborator) roles.push('collaborator')
+          if(client.user.isOwner) roles.push('author')
+          if(client.user.id == owner.user.id) roles.push('owner')
+          let app = client.app;
+          if(!permissions || (!permissions.role && !permissions.app) ){
+            resolve(true);
+            return
+          } else if (permissions && permissions.role && !permissions.app){
+              resolve(_.intersection(permissions.role, roles).length > 0)  
+              return
+          } else if (permissions && !permissions.role && permissions.app){
+              resolve(permissions.app.indexOf(app) >= 0)  
+            return
+          } else if (permissions && permissions.role && permissions.app){
+              resolve((_.intersection(permissions.role, roles).length > 0) && (permissions.app.indexOf(app) >= 0 ));
+            return
+          }
+          resolve(false)
+        })
+        .catch((e) => { reject(new PermissionException(e.toString()))})
+  }),
+
+  normalizePermissions: (permissions) => {
+    permissions = permissions || {};
+    _.forIn(defaultPermissions, (value,key) => { if(!permissions[key]) permissions[key] = value })
+    return permissions;
+  }
 }

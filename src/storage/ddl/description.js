@@ -1,4 +1,5 @@
-var Promise = require("bluebird");
+let Promise = require("bluebird");
+let storageUtils = require("../utils");
 
 
 class DefImplError extends Error {
@@ -45,12 +46,17 @@ module.exports = {
             Entities.find(criteria)
                     .then((res) => {
                         if (res.length == 0 ) reject(new DefImplError(`Cannot find models with criteria '${JSON.stringify(criteria)}'`))
-                        state.head = {
-                            data: res,
-                            type: "json"
-                        }
-                        resolve(state)    
+                        Promise.all(res.map((item) => storageUtils.accessIsAvailable(state.client, item.identity, 'desc')))
+                            .then((accessible) => {
+                                state.head = {
+                                    data: res.filter((item,index) => accessible[index]),
+                                    type: "json"
+                                }
+                                resolve(state)        
+                            })
+                            .catch( e => reject(new DefImplError(e.toString())))    
                     })
+                    
                     .catch( e => reject(new DefImplError(e.toString())))
         })    
     },
