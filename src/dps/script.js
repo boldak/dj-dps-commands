@@ -47,7 +47,7 @@ var remoteCall = function(script, args, state, config){
                 head: copy(state.head)
             }
             var url = args.host + "/api/script"
-            return getUrl(url,{state: remoteState, script: script, client: state.client, locale: })
+            return getUrl(url,{state: remoteState, script: script, client: state.client, locale:state.locale})
                 .then(function(result) {
                     state.head = result;
                     return state;
