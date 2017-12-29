@@ -20,5 +20,7 @@ module.exports =
         .concat(require("./src/text"))
 	.concat(require("./src/permissions"))
 	.concat(require("./src/storage"))
+    .concat(require("./src/sendmail"))
+
     
   
