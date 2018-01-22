@@ -4,6 +4,8 @@ var Promise = require("bluebird");
 var vm = require("vm");
 var dt = require("date-and-time");
 var q = require('dj-utils').query.criteria;
+var uuid = require('uuid');
+
 
 var EvalImplError = function(message) {
     this.message = message;
@@ -31,7 +33,8 @@ var implementation = function(state){
                             return dt.parse(value,format)
                         }
                     },
-                    comparator:q
+                    comparator:q,
+                    uuid:uuid
                 };
 
                 const script = new vm.Script(state.head.data);
