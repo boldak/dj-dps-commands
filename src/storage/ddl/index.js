@@ -2,5 +2,6 @@ module.exports = [
 	require("./create"),
 	require("./drop"),
 	require("./alter"),
-	require("./description")
+	require("./description"),
+	require("./extendPermissions")
 ]

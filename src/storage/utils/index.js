@@ -51,6 +51,7 @@ module.exports = {
 	}),
 
   access: (client, identity, operation) => new Promise((resolve, reject) => {
+     
       Entities
         .findOne({identity:identity})
         .then( (res) => {
@@ -60,11 +61,13 @@ module.exports = {
           }
           let owner = res.owner;
           let permissions = res.permissions[operation];
-          let roles = [];
+          let roles = ["any"];
           if(client.user.isAdmin) roles.push('administarator')
           if(client.user.isCollaborator) roles.push('collaborator')
           if(client.user.isOwner) roles.push('author')
           if(client.user.id == owner.user.id) roles.push('owner')
+            
+          
           let app = client.app;
           if(!permissions || (!permissions.role && !permissions.app) ){
             resolve();
@@ -140,5 +143,29 @@ accessIsAvailable: (client, identity, operation) => new Promise((resolve, reject
     permissions = permissions || {};
     _.forIn(defaultPermissions, (value,key) => { if(!permissions[key]) permissions[key] = value })
     return permissions;
-  }
+  },
+
+  extendPermissions: (identity, newValue) => new Promise((resolve, reject) =>{
+    
+    Entities
+        .findOne({identity:identity})
+        .then( (res) => {
+          
+          if(!res) {
+            reject(new PermissionException(`Entity '${identity}' is undefined`))
+            return
+          }
+          _.extend(res.permissions,newValue)
+          
+          Entities
+            .update({identity:identity},res)
+            .then( updated => {
+             
+              resolve(updated)
+            })
+            .catch( e => { reject(new PermissionException(e.toString()))})
+        })
+        .catch( e => { reject(new PermissionException(e.toString()))})  
+  })
+
 }
