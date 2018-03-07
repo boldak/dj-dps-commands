@@ -37,14 +37,16 @@ module.exports =  {
             let transporter = nodemailer.createTransport({
 			 service: 'gmail',
 			 auth: {
-			        user: 'data.jokey@gmail.com',
-			        pass: '19datajokey65'
+			        user: 'wdc.kpi.team@gmail.com',
+			        pass: 'worlddatacenter'
 			    }
 			});
 
+// https://myaccount.google.com/lesssecureapps   turn switch on if need
+
             let mailOptions = command.settings.options
    //          {
-			//   from: 'sender@email.com', // sender address
+			//   from: 'sender@email.com', // sender address from wdc.kpi.team
 			//   to: 'to@email.com', // list of receivers
 			//   subject: 'Subject of your email', // Subject line
 			//   html: '<p>Your html here</p>'// plain text body
