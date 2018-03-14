@@ -7,6 +7,7 @@ var mime = require('mime');
 var json2csv = require('json2csv');
 var iconv = require('iconv-lite');
 var fs = require("fs");
+let _ = require("lodash-node");
 
 
 var CSVConverterError = function(message) {
@@ -86,29 +87,33 @@ var exportArray = function(data) {
 
     // logger.debug("EXPORT ARRAY")
 
-    var fields = flat(data[0]).map(function(item, index) {
-        return "f" + index })
+    // var fields = flat(data[0]).map(function(item, index) {
+    //     return "f" + index })
+
+    var fields = _.pairs(data[0]).map(item => item[0])
     var res = []
 
-    data.forEach(function(row) {
-        if (util.isPrimitive(row)) {
-            res.push([row])
-        } else {
-            res.push(
-                flat(row).map(function(item) {
-                    return item.value })
-            )
-        }
-    })
+    res = data;
+    
+    // data.forEach(function(row) {
+    //     if (util.isPrimitive(row)) {
+    //         res.push([row])
+    //     } else {
+    //         res.push(
+    //             flat(row).map(function(item) {
+    //                 return item.value })
+    //         )
+    //     }
+    // })
 
 
-    res = res.map(function(item, index) {
-        var ne = {};
-        item.forEach(function(v, i) {
-            ne["f" + i] = v
-        })
-        return ne
-    })
+    // res = res.map(function(item, index) {
+    //     var ne = {};
+    //     item.forEach(function(v, i) {
+    //         ne["f" + i] = v
+    //     })
+    //     return ne
+    // })
     return iconv.encode(
         new Buffer(
             json2csv({ data: res, fields: fields, del: ";" })
@@ -137,6 +142,14 @@ var exportObject = function(data) {
 module.exports = function(data, params, locale, script, scriptContext) {
 
     // logger.debug("EXPORT CSV")
+
+    if(!fs.existsSync("./.tmp/public")){
+        fs.mkdirSync("./.tmp/public")
+    } 
+    if(!fs.existsSync("./.tmp/public/downloads")){
+        fs.mkdirSync("./.tmp/public/downloads")
+    } 
+
     try {
         if (isWdcSource(data)) {
             fs.writeFileSync("./.tmp/public/downloads/" + params.file, exportWdcSource(data));
