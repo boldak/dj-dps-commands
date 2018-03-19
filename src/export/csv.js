@@ -8,6 +8,7 @@ var json2csv = require('json2csv');
 var iconv = require('iconv-lite');
 var fs = require("fs");
 let _ = require("lodash-node");
+let path = require("path");
 
 
 var CSVConverterError = function(message) {
@@ -145,6 +146,9 @@ module.exports = function(data, params, locale, script, scriptContext) {
     console.log("EXPORT CSV", JSON.stringify(params, null, '\t'))
     console.log("DATA",JSON.stringify(data, null, '\t'))
     console.log("Is Array", util.isArray(data))
+    console.log(`Resolve path '.'`, path.resolve("."))
+    console.log(JSON.stringify(fs.readdirSync("."), null, "\t"));
+
     try {
         if(!fs.existsSync("./.tmp/public")){
             console.log('Create ./.tmp/public')
@@ -160,6 +164,7 @@ module.exports = function(data, params, locale, script, scriptContext) {
     }     
 
     console.log("./.tmp/public/downloads ", fs.existsSync("./.tmp/public/downloads"))
+    console.log("Resolve path", path.resolve("./.tmp/public/downloads"))
 
     try {
         if (isWdcSource(data)) {
