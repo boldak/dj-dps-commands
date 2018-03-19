@@ -147,11 +147,16 @@ module.exports = function(data, params, locale, script, scriptContext) {
     console.log("Is Array", util.isArray(data))
 
     if(!fs.existsSync("./.tmp/public")){
+        console.log('Create ./.tmp/public')
         fs.mkdirSync("./.tmp/public")
     } 
     if(!fs.existsSync("./.tmp/public/downloads")){
+        console.log('Create ./.tmp/public/downloads')
+          
         fs.mkdirSync("./.tmp/public/downloads")
     } 
+
+    console.log("./.tmp/public/downloads ", fs.existsSync("./.tmp/public/downloads"))
 
     try {
         if (isWdcSource(data)) {
