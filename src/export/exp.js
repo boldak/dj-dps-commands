@@ -18,16 +18,16 @@ var exportMap = {
 }
 
 var impl = function(data, params, locale, script, scriptContext) {
-    try {
-        if(!fs.existsSync("./.tmp/public")){
-           fs.mkdirSync("./.tmp/public")
-        } 
-        if(!fs.existsSync("./.tmp/public/downloads")){
-           fs.mkdirSync("./.tmp/public/downloads")
-        }
-    } catch (e) {
-        throw new ExportImplError(e.toString())
-    }     
+    // try {
+    //     if(!fs.existsSync("./.tmp/public")){
+    //        fs.mkdirSync("./.tmp/public")
+    //     } 
+    //     if(!fs.existsSync("./.tmp/public/downloads")){
+    //        fs.mkdirSync("./.tmp/public/downloads")
+    //     }
+    // } catch (e) {
+    //     throw new ExportImplError(e.toString())
+    // }     
     
     var filename = params.file;
     if (filename) {
