@@ -142,6 +142,7 @@ var exportObject = function(data) {
 module.exports = function(data, params, locale, script, scriptContext) {
 
     // logger.debug("EXPORT CSV")
+    console.log("EXPORT CSV", JSON.stringify(params, null, '\t'))
 
     if(!fs.existsSync("./.tmp/public")){
         fs.mkdirSync("./.tmp/public")
@@ -160,6 +161,7 @@ module.exports = function(data, params, locale, script, scriptContext) {
             return { url: "/downloads/" + params.file }
         }
         if (util.isArray(data)) {
+            console.log("It's array")
             fs.writeFileSync("./.tmp/public/downloads/" + params.file, exportArray(data));
             return { url: "/downloads/" + params.file }
         }
