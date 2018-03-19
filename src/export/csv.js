@@ -142,30 +142,11 @@ var exportObject = function(data) {
 
 module.exports = function(data, params, locale, script, scriptContext) {
 
-    // logger.debug("EXPORT CSV")
-    console.log("EXPORT CSV", JSON.stringify(params, null, '\t'))
-    console.log("DATA",JSON.stringify(data, null, '\t'))
-    console.log("Is Array", util.isArray(data))
-    console.log(`Resolve path '.'`, path.resolve("."))
-    console.log(JSON.stringify(fs.readdirSync("."), null, "\t"));
+    
 
-    try {
-        if(!fs.existsSync("./.tmp/public")){
-            console.log('Create ./.tmp/public')
-            fs.mkdirSync("./.tmp/public")
-        } 
-        if(!fs.existsSync("./.tmp/public/downloads")){
-            console.log('Create ./.tmp/public/downloads')
-              
-            fs.mkdirSync("./.tmp/public/downloads")
-        }
-    } catch (e) {
-        throw new CSVConverterError(e.toString())
-    }     
+    
 
-    console.log("./.tmp/public/downloads ", fs.existsSync("./.tmp/public/downloads"))
-    console.log("Resolve path", path.resolve("./.tmp/public/downloads"))
-
+  
     try {
         if (isWdcSource(data)) {
             fs.writeFileSync("./.tmp/public/downloads/" + params.file, exportWdcSource(data));
