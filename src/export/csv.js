@@ -145,16 +145,19 @@ module.exports = function(data, params, locale, script, scriptContext) {
     console.log("EXPORT CSV", JSON.stringify(params, null, '\t'))
     console.log("DATA",JSON.stringify(data, null, '\t'))
     console.log("Is Array", util.isArray(data))
-
-    if(!fs.existsSync("./.tmp/public")){
-        console.log('Create ./.tmp/public')
-        fs.mkdirSync("./.tmp/public")
-    } 
-    if(!fs.existsSync("./.tmp/public/downloads")){
-        console.log('Create ./.tmp/public/downloads')
-          
-        fs.mkdirSync("./.tmp/public/downloads")
-    } 
+    try {
+        if(!fs.existsSync("./.tmp/public")){
+            console.log('Create ./.tmp/public')
+            fs.mkdirSync("./.tmp/public")
+        } 
+        if(!fs.existsSync("./.tmp/public/downloads")){
+            console.log('Create ./.tmp/public/downloads')
+              
+            fs.mkdirSync("./.tmp/public/downloads")
+        }
+    } catch (e) {
+        throw new CSVConverterError(e.toString())
+    }     
 
     console.log("./.tmp/public/downloads ", fs.existsSync("./.tmp/public/downloads"))
 
