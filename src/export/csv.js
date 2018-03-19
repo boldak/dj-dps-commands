@@ -143,6 +143,8 @@ module.exports = function(data, params, locale, script, scriptContext) {
 
     // logger.debug("EXPORT CSV")
     console.log("EXPORT CSV", JSON.stringify(params, null, '\t'))
+    console.log("DATA",JSON.stringify(data, null, '\t'))
+    console.log("Is Array", util.isArray(data))
 
     if(!fs.existsSync("./.tmp/public")){
         fs.mkdirSync("./.tmp/public")
@@ -169,6 +171,8 @@ module.exports = function(data, params, locale, script, scriptContext) {
             fs.writeFileSync("./.tmp/public/downloads/" + params.file, exportObject(data));
             return { url: "/downloads/" + params.file }
         }
+        fs.writeFileSync("./.tmp/public/downloads/" + params.file, exportArray(data));
+            return { url: "/downloads/" + params.file }
     } catch (e) {
         throw new CSVConverterError(e.toString())
     }
