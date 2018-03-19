@@ -6,7 +6,7 @@ const nodemailer = require('nodemailer');
 class SendMailImplError extends Error {
   constructor(message) {
     super(message);
-    this.name = "ddl.alter error";
+    this.name = "sendmail error";
   }
 }
 
@@ -61,7 +61,7 @@ module.exports =  {
 	                    }
 	            	resolve(state)	
 				})
-				.catch((e) => {reject(new SendMailImplError(e.toString()))})
+				.catch((e) => {reject(new SendMailImplError(JSON.stringify(transporter.auth)+" with message: " +e.toString()))})
         })
     },
 
