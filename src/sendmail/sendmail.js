@@ -36,10 +36,10 @@ module.exports =  {
 
             let transporter = nodemailer.createTransport({
 			 service: 'gmail',
-			 auth: {
-			        user: 'wdc.kpi.team@gmail.com',
-			        pass: 'worlddatacenter'
-			    }
+             auth: {
+                    user: 'datajockey.forms@gmail.com',
+                    pass: 'worlddatacenter'
+                }
 			});
 
 // https://myaccount.google.com/lesssecureapps   turn switch on if need
@@ -61,7 +61,7 @@ module.exports =  {
 	                    }
 	            	resolve(state)	
 				})
-				.catch((e) => {reject(new SendMailImplError(JSON.stringify(transporter.auth)+" with message: " +e.toString()))})
+				.catch((e) => {reject(new SendMailImplError(JSON.stringify(transporter)+" with message: " +e.toString()))})
         })
     },
 
