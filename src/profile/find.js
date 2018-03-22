@@ -12,15 +12,19 @@ class ProfileFindImplError extends Error {
 
 
 let getUrl = function(url) {
+    
     return new Promise(function(resolve, reject) {
         var options = {
             method: 'GET',
-            uri: url
+            headers: {
+                'User-Agent': 'Request-Promise'
+            },
+            uri: url,
+            json: true
         }
         
         http(options)
             .then(function(result) {
-                console.log("resolve call "+ JSON.stringify(result))
                 resolve(result)
             })
             .catch(function(e) {
@@ -32,28 +36,47 @@ let getUrl = function(url) {
 let getGravatarProfile = (email) => {
 	let options = {
 	    email: email,
-	    type: 'json', // Default: json, 
-	                  // Available Types: 'json', 'xml', 'qr', 'php', 'vcf' 
-	    //parameters: {'callback': 'doSomething' }, //optional 
-	    secure: true
+	    type: 'json',  
+	    secure: false
 	}
-	return getUrl(gravatar.getProfileUrl(options)).then(res => {
-		return {
-			type: "gravatar",
-			profile: res
-		}
-	})
+    return new Promise((resolve, reject) => {
+        getUrl(gravatar.getProfileUrl(options))
+        .then(res => {
+            resolve( {
+                type: "gravatar",
+                profile: {
+                    name: res.entry[0].displayName,
+                    photo: res.entry[0].thumbnailUrl
+                }
+            })
+        })
+        .catch(e => {
+            console.log(gravatar.getProfileUrl(options) + ' > ' + e.toString())
+            resolve({type:"gravatar"})
+        })    
+    })
+	
 }
 
 let getGoogleProfile = (email) => {
 	const googleAvatarApi = 'https://picasaweb.google.com/data/entry/api/user/'
     const avatarUrl = googleAvatarApi + email + '?alt=json'
-
-	return getUrl(avatarUrl).then(res => {
-		return {
-			type: "google",
-			profile: res
-		}
+    return new Promise((resolve, reject) => {
+        getUrl(avatarUrl)
+        .then(res => {
+            let profile = {
+                name:res.entry.gphoto$nickname.$t,
+                photo:res.entry.gphoto$thumbnail.$t
+            }
+            resolve({
+                type: "google",
+                profile: profile
+            })
+        })
+        .catch(e => {
+            console.log(avatarUrl+' > '+e.toString())
+            resolve({type:"google"})
+        })   
 	})
 }
 
@@ -82,19 +105,27 @@ module.exports = {
     	
         if (!command.settings.email)
             throw new ProfileFindImplError("Cannot find profile without email")
-        
-        Promise.any([
-        	getGravatarProfile(command.settings.email),
-        	getGoogleProfile(command.settings.email)
-        ])
-        .then(res => {
-        	state.head = {
-                data: res,
-                type: "json"
-            }
-        	return state;
+        return new Promise((resolve, reject) => {
+            Promise.all([
+                getGoogleProfile(command.settings.email),
+                getGravatarProfile(command.settings.email)
+            ])
+            .then(res => {
+                let profile = (res[0] && res[0].profile)
+                                ?  res[0]
+                                : (res[1] && res[1].profile)
+                                    ? res[1]
+                                    : {type:"none"}
+
+                state.head = {
+                    data: profile,
+                    type: "json"
+                }
+                resolve(state);
+            })
+            .catch( e => {reject (new ProfileFindImplError(e.toString()))})
         })
-        .catch( e => new ProfileFindImplError(e.toString()))        
+                    
     },
 
     help: {
