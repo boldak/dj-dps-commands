@@ -18,9 +18,11 @@ module.exports =
         .concat(require("./src/xml"))
         .concat(require("./src/csv"))
         .concat(require("./src/text"))
-	.concat(require("./src/permissions"))
-	.concat(require("./src/storage"))
-    .concat(require("./src/sendmail"))
+    	.concat(require("./src/permissions"))
+    	.concat(require("./src/storage"))
+        .concat(require("./src/sendmail"))
+        .concat(require("./src/profile"))
+
 
     
   
