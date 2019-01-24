@@ -12,7 +12,7 @@ module.exports = {
   execute:function(command,state,config){
     try{  
       state.head = {
-        data: JSON.stringify(state.head.data),
+        data: (_.isString(state.head.data)) ? state.head.data : JSON.stringify(state.head.data),
         type: "string"
   		}
   	}catch(e){throw e}   

@@ -486,6 +486,41 @@ var d3 = {};
     return {U: u, S: q, V: v}
   }
 
+
+  exports.pca = data => {
+   
+    let X = data
+    let scaled = scale(X, true, true)
+    
+    let USV = svd(scaled);
+    let U = USV.U;
+    let S = diag(USV.S);
+    let V = USV.V;
+
+
+    // T = X*V = U*S
+    let pcXV = dot(X, V)
+    let pcUdS = dot(U, S);
+
+    let eigenValues = std(pcUdS).map(function(v){return v*v})
+    let _s = d3.sum(eigenValues)/eigenValues.length;
+    eigenValues = diag(eigenValues.map( v =>  v/_s ))
+
+
+    let factorCoef = V.map(d => d.map((v,i) => v/Math.sqrt(eigenValues[i][i])))
+  
+
+    let loadings = V.map(d => d.map((v,i) => v*Math.sqrt(eigenValues[i][i])))
+   
+    let scores = dot(scaled,factorCoef)
+   
+    // let prod = trunc(sub(pcXV, pcUdS), 1e-12);
+    // let zero = zeros(prod.length, prod[0].length);
+   
+    return {eigenValues: eigenValues, eigenVectors: V, scores: scores, loadings: loadings};
+  
+  }
+ 
   exports.PCA = function (table) {
 
     //console.log(table);

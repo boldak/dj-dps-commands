@@ -71,9 +71,10 @@ var implementation = function(script, args, state, config) {
             .config(state.instance.config())
             .script(script)
        
-        s._state = {
+        s._state =   
+        {
             locale: state.locale,
-
+            client: state.client,
             instance: s,
             storage: storage,
             head: copy(state.head),

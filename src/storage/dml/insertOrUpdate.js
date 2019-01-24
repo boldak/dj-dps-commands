@@ -15,21 +15,33 @@ var impl = function(params, state) {
     return new Promise(function(resolve, reject) {
         storageUtils.access(state.client, params.collection, 'insert')
         .then(() => {
-            var collection = sails.models[params.collection]
-            if(params.value.id){
-                collection
-                .find({id:params.value.id})
-                .then( res => {
-                    if(res.length > 0){
-                        resolve(collection.update({id:params.value.id}, params.value))
-                    } else {
-                        resolve(collection.create(params.value))            
-                    }
-                })
-                .catch((e) => { reject(new DMLInsertorUpdateImplError(e.toString()))})    
-            } else {
-                resolve(collection.create(params.value))
-            }
+            let collection = sails.models[params.collection]
+           
+            let promises = params.value.map( v => {
+                if(v.id){
+                    collection
+                    .find({id:v.id})
+                    .then( res => {
+                        if(res.length > 0){
+                            return collection.update({id:v.id}, v)
+                        } else {
+                            return collection.create(v)            
+                        }
+                    })
+                    .catch((e) => { reject(e)})    
+                } else {
+                    return collection.create(v)
+                }    
+            })
+
+            Promise.all(promises)
+                .then( res => { 
+                    resolve({
+                       totalRows: promises.length
+                    })
+                })    
+                .catch((e) => { reject(e)})
+            
         })
         .catch((e) => { reject(new DMLInsertorUpdateImplError(e.toString()))})
     })
@@ -51,7 +63,8 @@ module.exports = {
         "object": "collection",
         "entity": "collection",
         "into": "collection",
-        "value": "value"
+        "value": "value",
+        "values": "value"
     },
 
     defaultProperty: {},
@@ -72,7 +85,7 @@ module.exports = {
                 return
             }
 
-            // command.settings.value = (util.isArray(command.settings.value)) ? command.settings.value : [command.settings.values]
+            command.settings.value = (util.isArray(command.settings.value)) ? command.settings.value : [command.settings.value]
 
             impl(command.settings, state)
                 .then(function(result) {

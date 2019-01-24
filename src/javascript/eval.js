@@ -5,6 +5,8 @@ var vm = require("vm");
 var dt = require("date-and-time");
 var q = require('dj-utils').query.criteria;
 var uuid = require('uuid');
+let _ = require("lodash-node");
+let moment = require("moment")
 
 
 var EvalImplError = function(message) {
@@ -13,12 +15,31 @@ var EvalImplError = function(message) {
 }
 EvalImplError.prototype = Object.create(Error.prototype);
 EvalImplError.prototype.constructor = EvalImplError;
-var implementation = function(state){
+var implementation = function(state, config){
         try {
 
                 const sandbox = {};
                 sandbox.$scope = state.storage;
-                sandbox._ = require("lodash-node");
+                sandbox.$file = state.file;
+                
+
+                sandbox._ = _;
+                sandbox.moment = moment
+
+                // sandbox._run = (command, settings) =>  {
+                //     let commandImpl = _.find(config, d => d.name == command )
+                    
+                //     if( !commandImpl ) {
+                //         throw (new EvalImplError(`dps command ${command} not recognized`))
+                //     }
+
+                //     let cmd = {settings}
+                //     let res = commandImpl.execute(cmd, state, config)
+                //     console.log(res)
+                //     return res
+
+                // }
+              
                 sandbox._util = {
                     format:{
                         date: function(value,format){
@@ -70,10 +91,11 @@ module.exports = {
     implementation:implementation,
 
     execute: function(command, state, config) {
+
         return new Promise(function(resolve, reject) {
             if (state.head.type != "string") reject( new EvalImplError("Incompatible context type: " + state.head.type+". Use context injection or 'str()' command to convert context to 'string' type"))
             try{
-                resolve(implementation(state))
+                resolve(implementation(state, config))
             } catch (e) {
                 reject(new EvalImplError(e.toString()))
             }
