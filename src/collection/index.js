@@ -7,5 +7,7 @@ module.exports = [
 	require("./innerjoin"),
 	require("./outerjoin"),
 	require("./map"),
-	require("./countby")
+	require("./countby"),
+	require("./zip"),
+	require("./unzip")
 ]

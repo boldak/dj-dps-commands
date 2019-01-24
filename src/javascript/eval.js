@@ -41,6 +41,55 @@ var implementation = function(state, config){
                 // }
               
                 sandbox._util = {
+                    
+                    numberPrecisionMapper(digits,fields){
+                        return item => {
+                            fields = (fields) ? fields : Object.keys(item);
+                            fields = ( util.isArray(fields) ) ? fields : [ fields ]
+                            fields.forEach( v => {
+                               item[v] =  (_.isNumber(item[v])) ? Number.parseFloat((item[v]/1).toFixed(digits)) : item[v]
+                            })
+                            return item
+                        }
+                    },
+
+                    dateFormatMapper(format, fields){
+                        return item => {
+                            fields = (fields) ? fields : [] 
+                            fields = ( util.isArray(fields) ) ? fields : [ fields ]
+                            fields.forEach( v => {
+                               item[v] = moment(new Date(item[v])).format(format)
+                            })
+                            return item
+                        }
+                    },
+
+                    dateParseMapper(format, fields){
+                        return item => {
+                            fields = (fields) ? fields : [] 
+                            fields = ( util.isArray(fields) ) ? fields : [ fields ]
+                            fields.forEach( v => {
+                               item[v] = moment(item[v], format)
+                            })
+                            return item
+                        }
+                    },
+
+                    selectFieldsMapper(fields){
+                        return item => {
+                            fields = (fields) ? fields : [] 
+                            fields = ( util.isArray(fields) ) ? fields : [ fields ]
+                            let res = {}
+                            fields.forEach( v => {
+                               res[v] = item[v]
+                            })
+                            return res
+                        }
+                    },
+
+
+
+
                     format:{
                         date: function(value,format){
                            format = format || "YYYY MM DD";
