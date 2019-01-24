@@ -14,7 +14,8 @@ ExportImplError.prototype.constructor = ExportImplError;
 
 var exportMap = {
     "text/csv": require("./csv"),
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": require("./xlsx")
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": require("./xlsx"),
+    "application/json": require("./json")
 }
 
 var impl = function(data, params, locale, script, scriptContext) {
