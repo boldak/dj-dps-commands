@@ -10,7 +10,10 @@ module.exports = {
 
     synonims: {
         "stat.standardize": "stat.standardize",
-        "s.vstd": "stat.standardize"        
+        "s.vstd": "stat.standardize",
+        "stat.norm.std": "stat.standardize",
+        "s.norm.std": "stat.standardize"
+                  
     },
 
     "internal aliases":{

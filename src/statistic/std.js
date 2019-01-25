@@ -1,56 +1,53 @@
 let STAT = require("../lib/stat")
 let util = require("util");
 let s_util = require("./utils");
-let StatImplError = require("./staterror")
+let StatImplError = require("./staterror");
 
 
 
 module.exports = {
-    name: "stat.logNormalize",
+    name: "stat.std",
 
     synonims: {
-        "stat.logNormalize": "stat.logNormalize",
-        "s.vlog": "stat.logNormalize",
-        "stat.norm.log": "stat.logNormalize",
-        "s.norm.log": "stat.logNormalize"        
+        "stat.std": "stat.std",
+        "s.std": "stat.std"
     },
 
     "internal aliases":{
         "mapper": "mapper",
         "by": "mapper",
-        "named": "named",
-        "name": "named",
-        "return": "named"
+        "for": "mapper"
     },
 
-    defaultProperty: {},
+    defaultProperty: {
+        "stat.std": "mapper",
+        "s.std": "mapper"
+    },
 
     execute: function(command, state, config) {
 
-       if(!command.settings.mapper)
-            throw new StatImplError("Log-normalization mapper not defined")
-    
-        if(!util.isFunction(command.settings.mapper)){
-            let attr_name = command.settings.mapper
-            command.settings.mapper = item => item[attr_name]
-        }
-
-        command.settings.named = command.settings.named || "log"
-
         try {
-
-            let res = STAT.logNormalize(
-                s_util.array2floats(
-                    state.head.data.map(command.settings.mapper)
-                )
-            )    
             
-            state.head = {
-                type:   "json",
-                data:   state.head.data.map( ( r, index ) => {
-                            r[ command.settings.named ] = res[ index ]
-                            return r
-                        })
+            command.settings.mapper = (command.settings.mapper) ? command.settings.mapper : []        
+            command.settings.mapper = (util.isArray(command.settings.mapper)) ? command.settings.mapper : [command.settings.mapper];
+
+            command.settings.mapper = command.settings.mapper.map( f => ({ 
+                    field: f,
+                    values: s_util.array2floats(state.head.data.map( v => v[f]))
+                })
+            )
+            
+            let res = {
+                statistic:"std"
+            }
+
+            command.settings.mapper.forEach( f => {
+                res[f.field] = STAT.std(f.values)
+            })
+            
+           state.head = {
+                type: "json",
+                data: res
             }
 
         } catch (e) {
@@ -94,3 +91,4 @@ module.exports = {
         }
     }
 }
+

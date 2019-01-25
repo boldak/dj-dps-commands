@@ -742,7 +742,7 @@ function granulate(data,bins){
             }
           })
   
-   return result;
+   return res;
 }
 
 

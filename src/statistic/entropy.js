@@ -1,56 +1,59 @@
 let STAT = require("../lib/stat")
 let util = require("util");
 let s_util = require("./utils");
-let StatImplError = require("./staterror")
+let StatImplError = require("./staterror");
+let _ = require("lodash-node");
 
 
 
 module.exports = {
-    name: "stat.logNormalize",
+    name: "stat.entropy",
 
     synonims: {
-        "stat.logNormalize": "stat.logNormalize",
-        "s.vlog": "stat.logNormalize",
-        "stat.norm.log": "stat.logNormalize",
-        "s.norm.log": "stat.logNormalize"        
+        "stat.entropy": "stat.entropy",
+        "s.entropy": "stat.entropy"
     },
 
     "internal aliases":{
         "mapper": "mapper",
         "by": "mapper",
-        "named": "named",
-        "name": "named",
-        "return": "named"
+        "for": "mapper"
     },
 
-    defaultProperty: {},
+    defaultProperty: {
+        "stat.entropy": "mapper",
+        "s.entropy": "mapper"
+    },
 
     execute: function(command, state, config) {
 
-       if(!command.settings.mapper)
-            throw new StatImplError("Log-normalization mapper not defined")
-    
-        if(!util.isFunction(command.settings.mapper)){
-            let attr_name = command.settings.mapper
-            command.settings.mapper = item => item[attr_name]
-        }
-
-        command.settings.named = command.settings.named || "log"
-
         try {
-
-            let res = STAT.logNormalize(
-                s_util.array2floats(
-                    state.head.data.map(command.settings.mapper)
-                )
-            )    
             
-            state.head = {
-                type:   "json",
-                data:   state.head.data.map( ( r, index ) => {
-                            r[ command.settings.named ] = res[ index ]
-                            return r
-                        })
+            if( state.head.data.length == 0 ) throw new StatImplError("Cannot calc entropy for empty collection.")
+
+            command.settings.mapper = (command.settings.mapper) ? command.settings.mapper : []        
+            command.settings.mapper = (util.isArray(command.settings.mapper)) ? command.settings.mapper : [command.settings.mapper];
+
+            command.settings.mapper = command.settings.mapper.map( f => ({ 
+                    field: f,
+                    values: _.pairs(
+                                _.countBy(s_util.array2floats(state.head.data.map( v => v[f])))
+                            )
+                            .map( v => v[1]/state.head.data.length)
+                })
+            )
+            
+            let res = {
+                statistic:"entropy"
+            }
+
+            command.settings.mapper.forEach( f => {
+                res[f.field] = STAT.entropy(f.values)
+            })
+            
+           state.head = {
+                type: "json",
+                data: res
             }
 
         } catch (e) {
@@ -94,3 +97,4 @@ module.exports = {
         }
     }
 }
+

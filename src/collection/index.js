@@ -9,5 +9,6 @@ module.exports = [
 	require("./map"),
 	require("./countby"),
 	require("./zip"),
-	require("./unzip")
+	require("./unzip"),
+	require("./push")
 ]

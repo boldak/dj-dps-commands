@@ -9,7 +9,9 @@ module.exports = {
 
     synonims: {
         "stat.normalize": "stat.normalize",
-        "s.vnorm": "stat.normalize"        
+        "s.vnorm": "stat.normalize",
+        "stat.norm.range": "stat.normalize",
+        "s.norm.range": "stat.normalize"        
     },
 
     "internal aliases":{

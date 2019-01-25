@@ -4,15 +4,14 @@ let s_util = require("./utils");
 let StatImplError = require("./staterror")
 
 
-
 module.exports = {
-    name: "stat.logNormalize",
+    name: "stat.granulate",
 
     synonims: {
-        "stat.logNormalize": "stat.logNormalize",
-        "s.vlog": "stat.logNormalize",
-        "stat.norm.log": "stat.logNormalize",
-        "s.norm.log": "stat.logNormalize"        
+        "stat.granulate": "stat.granulate",
+        "s.granulate": "stat.granulate",
+        "stat.granule": "stat.granulate",
+        "s.granule": "stat.granulate"        
     },
 
     "internal aliases":{
@@ -27,32 +26,35 @@ module.exports = {
 
     execute: function(command, state, config) {
 
-       if(!command.settings.mapper)
-            throw new StatImplError("Log-normalization mapper not defined")
+        // if(!s_util.isMatrix( state.head.data ))
+        //     throw new StatImplError("Incompatible context type.") 
+
+        if(!command.settings.mapper)
+            throw new StatImplError("Granulerization mapper not defined")
     
         if(!util.isFunction(command.settings.mapper)){
             let attr_name = command.settings.mapper
             command.settings.mapper = item => item[attr_name]
         }
 
-        command.settings.named = command.settings.named || "log"
+        command.settings.named = command.settings.named || "granule"
+        command.settings.bins = command.settings.bins || 5
 
         try {
 
-            let res = STAT.logNormalize(
+            let res = STAT.granulate(
                 s_util.array2floats(
                     state.head.data.map(command.settings.mapper)
-                )
+                ), command.settings.bins
             )    
             
             state.head = {
                 type:   "json",
                 data:   state.head.data.map( ( r, index ) => {
-                            r[ command.settings.named ] = res[ index ]
+                            r[ command.settings.named ] = res[ index ] + 1
                             return r
                         })
             }
-
         } catch (e) {
             throw new StatImplError(e.toString())
         }
