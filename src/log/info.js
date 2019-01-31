@@ -19,17 +19,19 @@ module.exports = {
  },
 
   execute:function(command,state,config){
-  	state.logger = state.logger || logger.local();
+  	// console.log("start ", state.logger.id)
+    state.logger = state.logger || logger.local();
     state.logger.info(
     	((command.settings.value) 
     		? JSON.stringify((command.settings.value))
     		: JSON.stringify((state.head))
     	)	
     )
-    console.log("INFO "+((command.settings.value) 
-        ? JSON.stringify((command.settings.value))
-        : JSON.stringify((state.head))
-      ))
+    // console.log("INFO "+((command.settings.value) 
+    //     ? JSON.stringify((command.settings.value))
+    //     : JSON.stringify((state.head))
+    //   ))
+    // console.log("stop ", state.logger.id)
     return state;
   },
 

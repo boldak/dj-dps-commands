@@ -29,12 +29,16 @@ let defaultPermissions = {
 module.exports = {
 	reloadORM: (sails) => new Promise(( resolve, reject ) => {
 		try {
+            
+            // console.log("========> BEFORE ORM RELOAD")
             sails.once("hook:orm:reloaded", () => {
                        // _.forIn(sails.models, (value,key) => {
                        //      // if(util.isObject(value)) value.datastore = undefined;
                        //      console.log(key+" = "+ value.datastore)
                        //  }) 
+                      // console.log("========> After ORM RELOAD")
                       resolve();
+
             })
             sails.hooks.orm.teardown(()=>{
                 sails.hooks.orm.configure()
@@ -112,7 +116,7 @@ accessIsAvailable: (client, identity, operation) => new Promise((resolve, reject
             return
           }
 
-          console.log(res)
+          // console.log(res)
           let owner = res.owner;
           let permissions = (res.permissions) ? res.permissions[operation] : defaultPermissions
           let roles = [];

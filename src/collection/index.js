@@ -10,5 +10,6 @@ module.exports = [
 	require("./countby"),
 	require("./zip"),
 	require("./unzip"),
-	require("./push")
+	require("./push"),
+	require("./take")
 ]

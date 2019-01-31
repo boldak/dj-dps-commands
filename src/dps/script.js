@@ -77,6 +77,7 @@ var implementation = function(script, args, state, config) {
             client: state.client,
             instance: s,
             storage: storage,
+            logger: state.logger,
             head: copy(state.head),
             _lib: state._lib
         }
